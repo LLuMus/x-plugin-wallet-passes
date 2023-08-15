@@ -7,7 +7,7 @@
 *.dll
 *.so
 *.dylib
-
+.dev
 # Test binary, built with `go test -c`
 *.test
 
@@ -19,3 +19,12 @@
 
 # Go workspace file
 go.work
+
+assets/certificates
+vendor
+.idea
+
+tmp
+
+public/node_modules
+public/build

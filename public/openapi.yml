@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  title: Wallet Passes
+  description: Create a iOS Wallet Pass (Passbook) and returns a link to visit and add it on your iOS device (iPhone, iPad, iWatch).
+  version: 1.0.0
+  contact:
+    email: contact@walletpasses.xyz
+servers:
+  - url: https://walletpasses.xyz
+paths:
+  /api/v1/passbook:
+    post:
+      summary: Create a iOS Wallet Pass (Passbook) and returns a link to visit and add it on your iOS device (iPhone, iPad, iWatch).
+      description: |
+        With the Wallet app, you can add and use boarding passes, movie tickets, coupons, rewards cards, and more. You can also share some passes and tickets.
+      operationId: createPassbook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePassbookRequest'
+      responses:
+        '200':
+          description: A link for the passbook file to add to your Wallet app.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePassbookResponse'
+        '400':
+          description: Invalid parameters provided, try again with something different.
+        '500':
+          description: There was an internal server error, please try again with something different or contact us.
+
+components:
+  schemas:
+    CreatePassbookResponse:
+      type: object
+      properties:
+        link:
+          description: A link for the passbook file to add to your Wallet app.
+          type: string
+    CreatePassbookRequest:
+      type: object
+      description: |
+        Standard passes have up to 3 header, 1 primary, 4 secondary, and 4 auxiliary fields. Boarding passes 2 more primary and 5 auxiliary. Coupons and store cards can have 4 secondary and ancillary fields. Text length affects field visibility; excess text may hide fields.
+      properties:
+        type:
+          type: string
+          example: "generic"
+          description: |
+            The type of pass. The value must be one of the following values:
+            - boardingPass
+            - coupon
+            - eventTicket
+            - generic
+            - storeCard
+        barcode:
+          type: object
+          description: |
+            To add a barcode to a pass, provide a value for the barcodes key at the top level of the pass.json file. The value is an array of dictionaries that describes the barcode you want to display. This allows you to specify fallbacks for your barcode. PassKit displays the first supported barcode in this array. Note that the PKBarcodeFormatQR, PKBarcodeFormatPDF417, PKBarcodeFormatAztec, and PKBarcodeFormatCode128 formats are all valid on iOS 9 and later; therefore, they do not need fallbacks. watchOS does not support the PKBarcodeFormatCode128 format. If a PKBarcodeFormatCode128 barcode is included in the barcodes array, an alternative barcode is used as fallback; if a PKBarcodeFormatCode128 barcode is the only barcode you supply, no barcode is displayed.
+          properties:
+            message:
+              type: string
+              example: "123456789"
+            format:
+              type: string
+              example: "PKBarcodeFormatQR"
+            messageEncoding:
+              type: string
+              example: "utf-8"
+        organizationName:
+          type: string
+          example: "OpenAI"
+          description: |
+            The organization name is displayed on the lock screen when your pass is relevant and by apps such as Mail which act as a conduit for passes. The value for the organizationName key in the pass specifies the organization name. Choose a name that users recognize and associate with your organization or company.
+        description:
+          type: string
+          example: "Open Artificial Intelligence"
+          description: |
+            The description lets VoiceOver make your pass accessible to blind and low-vision users. The value for the description key in the pass specifies the description. The description should start with a high-level term such as “Membership card,” “Weekly coupon,” or “Bus ticket” followed by one or two small pieces of information, such as the coupon’s offer and the store where it’s valid. Don’t try to summarize the entire contents of the pass, but include enough detail to let users distinguish between passes of the same type.
+        iconImage:
+          type: string
+          example: "https://picsum.photos/200/200"
+          description: |
+            URL to the image that will be download (png, jpg or gif). The icon is displayed when a pass is shown on the lock screen and by apps such as Mail when showing a pass attached to an email.
+        logoImage:
+          type: string
+          example: "https://picsum.photos/200/200"
+          description: |
+            URL to the image that will be download (png, jpg or gif). The URL of the logo image is displayed in the top left corner of the pass, next to the logo text.
+        logoText:
+          type: string
+          example: ""
+          description: |
+            Displayed next to the logo image, can overflow the bounds if string is too long. This is a very important place visually. Choose something short that describes the pass, such as the company or program name.
+        thumbnailImage:
+          type: string
+          example: "https://picsum.photos/200/200"
+          description: |
+            URL to the image that will be download (png, jpg or gif). Only valid for "generic" and "eventTicket" type passes. The thumbnail image displayed next to the fields on the front of the pass.
+        stripImage:
+          type: string
+          example: "https://picsum.photos/200/200"
+          description: |
+            URL to the image that will be download (png, jpg or gif). Valid for all types except "boardingPass". The strip image is displayed behind the primary fields. For event ticket if you specify a strip image, do not specify a background image or a thumbnail.
+        foregroundColor:
+          type: string
+          description: |
+            The foreground color, used for the values of fields shown on the front of the pass. Needs format rgb(255, 255, 255).
+          example: "rgb(255, 255, 255)"
+        labelColor:
+          type: string
+          description: |
+            The label color, used for the labels of fields shown on the front of the pass. Needs to contrast against the background color. Needs format rgb(255, 255, 255).
+          example: "rgb(255, 255, 255)"
+        backgroundColor:
+          type: string
+          description: |
+            The background color, used for the background of the front and back of the pass. Needs format rgb(255, 255, 255).
+          example: "rgb(36, 55, 166)"
+        fields:
+          type: object
+          required:
+            - primaryFields
+          properties:
+            headerFields:
+              description: |
+                The one header field that can be passed, appears at the top, next to the logo text in the front of the pass.
+              type: array
+              items:
+                $ref: '#/components/schemas/Field'
+            primaryFields:
+              description: |
+                The primary fields contain the most important information and are shown prominently on the front of the pass, bellow the logo, logo text and header field header. Boarding passes primary fields are normally the boarding departure and arrival airports.
+              type: array
+              items:
+                $ref: '#/components/schemas/Field'
+            secondaryFields:
+              description: |
+                Secondary fields are less important and less prominent. Appears under the primary fields.
+              type: array
+              items:
+                $ref: '#/components/schemas/Field'
+            auxiliaryFields:
+              description: |
+                Auxiliary fields are even less prominent than secondary fields. Appears under the secondary fields.
+              type: array
+              items:
+                $ref: '#/components/schemas/Field'
+            backFields:
+              description: |
+                The text of the back fields is run through data detectors for URLs and phone numbers, which appear as live links. Users can tap the URL to launch it in Safari and can tap phone numbers to dial them.
+              type: array
+              items:
+                $ref: '#/components/schemas/Field'
+      required:
+        - type
+        - organizationName
+        - description
+        - iconImage
+        - foregroundColor
+        - labelColor
+        - backgroundColor
+        - fields
+    Field:
+      type: object
+      properties:
+        dateStyle:
+          type: string
+          example: "PKDateStyleFull"
+          description: |
+            There are three kinds of formatting you can apply to a field: alignment, date formatters, and number formatters: To set the alignment for a field, specify a value for the alignment key in the field dictionary. To format a date, specify a value for the dateStyle and timeStyle keys in the field dictionary. To format a currency amount or other number, specify a value for the currencyCode or numberStyle key in the field dictionary. Letting Wallet handle dates, times, and currency amounts ensures the right display formatting based on the user’s locale. Listing 4-3 shows an example of date and number formatting.
+        key:
+          type: string
+          example: "issued-at"
+          description: |
+            (Required) A UNIQUE key that identifies a field in the pass; for example 'issued-at', 'departure-gate', 'age'.
+        label:
+          type: string
+          example: "Issued At"
+          description: |
+            The information shown on a pass is broken up into fields. Each field is defined by a dictionary, which gives it a value and label (which are displayed to the user), a unique key, and optional information about how its value should be formatted. Listing 4-2 shows a pass with a few simple fields. The primary fields contain the most important information and are shown prominently on the pass. Secondary fields are less important and less prominent, and auxiliary fields are even less so. Header fields contain highly salient information, and they are the only field that is visible when the passes are stacked up in Wallet, so use them sparingly.
+        value:
+          type: string
+          example: "2006-01-02T15:04:05Z07:00"
+          description: |
+            The text of the back fields is run through data detectors for URLs and phone numbers, which appear as live links. Users can tap the URL to launch it in Safari and can tap phone numbers to dial them. Text on the back of the card can include line breaks, escaped in the JSON file as \n.
+      required:
+        - label
+        - value

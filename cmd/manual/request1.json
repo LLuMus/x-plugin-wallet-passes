@@ -1,0 +1,32 @@
+{
+  "backgroundColor": "#FFFFFF",
+  "barcode": {
+    "format": "PKBarcodeFormatQR",
+    "message": "1234567890",
+    "messageEncoding": "iso-8859-1"
+  },
+  "description": "Membership card for Gym XYZ",
+  "foregroundColor": "#000000",
+  "generic": {
+    "auxiliaryFields": [
+      {
+        "key": "expDate",
+        "label": "Expiration Date",
+        "value": "2024-12-31"
+      }
+    ],
+    "backFields": [
+      {
+        "key": "terms",
+        "label": "Terms and Conditions",
+        "value": "No refunds."
+      }
+    ]
+  },
+  "labelColor": "#FF0000",
+  "iconImage": "https://picsum.photos/200/200",
+  "logoImage": "https://picsum.photos/200/200",
+  "logoText": "Gym XYZ",
+  "organizationName": "Gym XYZ",
+  "thumbnailImage": "https://picsum.photos/200/300"
+}

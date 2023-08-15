@@ -1,0 +1,62 @@
+version: '2.1'
+
+services:
+  postgres:
+    build:
+      context: ./migrations
+      dockerfile: Dockerfile
+    image: postgres:11.10-alpine
+    volumes:
+      - ./.dev/database/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    container_name: wallet-passes-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pgpassword
+      - POSTGRES_DB=wallet_passes
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+
+  wallet-passes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    links:
+      - postgres
+      - redis
+    depends_on:
+      postgres:
+        condition: service_healthy
+    container_name: wallet-passes
+    volumes:
+      - ./public/build:/app/public
+      - ./tmp:/app/tmp
+    environment:
+      - LOG_LEVEL=debug
+      - DB_URI=postgresql://postgres:5432/wallet_passes?user=postgres&password=pgpassword&sslmode=disable
+      - PORT=80
+      - REDIS_ADDRESS=redis:6379
+      - OPENAI_PLUGIN_KEY=${OPENAI_PLUGIN_KEY}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - TEAM_IDENTIFIER=${TEAM_IDENTIFIER}
+      - BASE_PATH=/app
+      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - WALLET_STRIPE_WEBHOOK_SECRET=${WALLET_STRIPE_WEBHOOK_SECRET}
+      - WALLET_STRIPE_SECRET=${WALLET_STRIPE_SECRET}
+      - WALLET_STRIPE_PRICE=${WALLET_STRIPE_PRICE}
+      - WALLET_STRIPE_TAX=${WALLET_STRIPE_TAX}
+      - BASE_URL=https://5adf-2a02-810b-f40-5b-fcc8-fe7d-602f-3a4c.ngrok-free.app/

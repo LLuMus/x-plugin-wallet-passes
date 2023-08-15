@@ -1,0 +1,32 @@
+{
+  "backgroundColor": "#4B5320",
+  "barcode": {
+    "format": "PKBarcodeFormatQR",
+    "message": "HUNT2023XYZ",
+    "messageEncoding": "iso-8859-1"
+  },
+  "description": "Membership card for Hunting Club Alpha",
+  "foregroundColor": "#FFFFFF",
+  "generic": {
+    "auxiliaryFields": [
+      {
+        "key": "expDate",
+        "label": "Expiration Date",
+        "value": "2024-09-30"
+      }
+    ],
+    "backFields": [
+      {
+        "key": "terms",
+        "label": "Terms and Conditions",
+        "value": "Observe all local hunting laws and regulations."
+      }
+    ]
+  },
+  "labelColor": "#FFD700",
+  "iconImage": "https://picsum.photos/200/200",
+  "logoImage": "https://picsum.photos/200/200",
+  "logoText": "Hunting Club Alpha",
+  "organizationName": "Hunting Club Alpha",
+  "thumbnailImage": "https://picsum.photos/200/300"
+}

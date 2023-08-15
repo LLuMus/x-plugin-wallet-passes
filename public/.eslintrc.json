@@ -1,0 +1,64 @@
+{
+  "env": {
+    "browser": false,
+    "es6": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [ "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ],
+    "object-curly-spacing": ["error", "always"],
+    "@typescript-eslint/no-floating-promises": ["warn"],
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "comma-dangle": "off",
+    "no-param-reassign": "off",
+    "no-plusplus": "off",
+    "arrow-parens": ["off"],
+    "require-jsdoc": "off",
+    "import/prefer-default-export": "off",
+    "no-use-before-define": "off",
+    "no-underscore-dangle": "off",
+    "no-invalid-this": "off",
+    "no-case-declarations": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "max-len": [1, 180],
+    "indent": ["error", 2, {
+      "SwitchCase": 1,
+      "MemberExpression": 1,
+      "ignoredNodes": [
+        "FunctionExpression > .params[decorators.length > 0]",
+        "FunctionExpression > .params > :matches(Decorator, :not(:first-child))",
+        "ClassBody.body > PropertyDefinition[decorators.length > 0] > .key"
+      ]
+    }],
+    "@typescript-eslint/no-inferrable-types": "off",
+    "vars-on-top": "off",
+    "class-methods-use-this": "off",
+    "space-before-function-paren": ["error", "never"],
+    "semi": ["error", "always"],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ]
+  }
+}
